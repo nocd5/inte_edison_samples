@@ -1,0 +1,34 @@
+<script src="http://ccchart.com/js/ccchart.js" charset="utf-8"></script>
+<canvas id="konashi"></canvas>
+<script>
+var chartdata = {
+  "config": {
+    "title": "",
+    "type": "line",
+    "bg": "#fff",
+    "textColor": "#000",
+    "useMarker": "css-ring",
+    "lineWidth": 2,
+    "borderWidth": 5,
+    "markerWidth": 5,
+    "width": 1000,
+    "height": 300,
+  },
+
+  "data": [
+    ["H:M:S"],
+    ["Temperature[degC]"],
+    ["Humidity[%RH]"],
+  ]
+};
+
+  var data = JSON.parse(JSON.stringify(chartdata));
+  data["config"]["title"] = "Konashi/Uzuki";
+
+  ccchart.wsCloseAll();
+  ccchart
+      .init('konashi', data)
+      .ws('ws://localhost:8016')
+      .on('message', ccchart.wscase.oneColAtATime)
+
+</script>
