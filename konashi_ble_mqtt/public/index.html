@@ -1,5 +1,5 @@
-<script src="http://ccchart.com/js/ccchart.js" charset="utf-8"></script>
-<canvas id="konashi"></canvas>
+<script src="ccchart.js" charset="utf-8"></script>
+<canvas id="chart1"></canvas>
 <script>
 var chartdata = {
   "config": {
@@ -11,10 +11,12 @@ var chartdata = {
     "lineWidth": 2,
     "borderWidth": 5,
     "markerWidth": 5,
-    "width": 1000,
-    "height": 300,
+    "width": window.innerWidth - 30,
+    "height": window.innerHeight - 30,
     "maxWsColLen": 15,
     "paddingRight": 150,
+    "minY": 0,
+    "maxY": 100,
   },
 
   "data": [
@@ -24,13 +26,17 @@ var chartdata = {
   ]
 };
 
-  var data = JSON.parse(JSON.stringify(chartdata));
-  data["config"]["title"] = "Konashi/Uzuki";
+var data = JSON.parse(JSON.stringify(chartdata));
+data["config"]["title"] = "Konashi/Uzuki";
 
-  ccchart.wsCloseAll();
-  ccchart
-      .init('konashi', data)
-      .ws('ws://localhost:8016')
-      .on('message', ccchart.wscase.oneColAtATime)
+ccchart.wsCloseAll();
+ccchart.init('chart1', data)
+       .ws('ws://192.168.11.5:8016')
+       .on('message', ccchart.wscase.oneColAtATime)
+
+window.addEventListener('resize', function(){
+  data["config"]["width"] = window.innerWidth - 30;
+  data["config"]["height"] = window.innerHeight - 30;
+});
 
 </script>

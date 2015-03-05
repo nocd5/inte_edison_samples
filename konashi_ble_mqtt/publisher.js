@@ -104,7 +104,6 @@ noble.on('discover', function(peripheral){
             console.log('characteristics.length: ' + characteristics.length);
             // enable I2C
             characteristics[0].write(new Buffer([KOSHIAN_I2C_MODE_ENABLE_100K]), false);
-            var i = 0;
             setInterval(function(){
               readReg(characteristics, ADDR_Si7013, CMD_TEMP, 2, function(temp_raw){
                 readReg(characteristics, ADDR_Si7013, CMD_RH, 2, function(rh_raw){

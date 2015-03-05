@@ -1,11 +1,13 @@
 var mqtt = require('mqtt'),
     client = mqtt.connect('mqtt://admin:password@192.168.2.2:61613');
-var WsServer = require('ws').Server;
+var wsServer = require('ws').Server;
 
-var konashiWs = new WsServer({
-    host: 'localhost',
-    port: 8016
-});
+var http = require('http'),
+    express = require('express'),
+    app = express(),
+    server = http.createServer(app);
+
+var konashiWs = new wsServer({"port":8016});
 
 client.subscribe('Konashi/#');
 
@@ -19,5 +21,14 @@ client.on('message', function(topic, message) {
       c.send(JSON.stringify(dataAry));
     });
   }
+});
+
+// Start Http Server
+app.use(express.static(__dirname + '/public'));
+server.listen(8080);
+console.log('Server running');
+console.log('root :' + __dirname + '/public');
+server.on('connection', function(socket){
+  console.log('connected: ' + socket.remoteAddress);
 });
 
