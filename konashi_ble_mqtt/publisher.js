@@ -1,5 +1,11 @@
-var mqtt = require('mqtt'),
-    client = mqtt.connect('mqtt://admin:password@192.168.2.2:61613');
+var mqtt = require('mqtt');
+var client = mqtt.connect({
+  host:'192.168.11.5',
+  port:61613,
+  username:'admin',
+  password:'password'
+});
+
 var noble = require('noble');
 var date = require('date-utils');
 var sprintf = require('sprintf-js').sprintf;
@@ -69,7 +75,7 @@ function publishData(temp, rh){
   var date = new Date();
   var data = {"temp":temp, "rh":rh}
   data["date"] = date.toFormat("HH24:MI:SS");
-  client.publish('Konashi/Uzuki', JSON.stringify(data));
+  client.publish('nocd5@github/Koshian', JSON.stringify(data));
 }
 
 noble.on('discover', function(peripheral){
@@ -114,7 +120,7 @@ noble.on('discover', function(peripheral){
                   }
                 });
               });
-            }, 5000);
+            }, 3000);
           }
         );
       }

@@ -1,5 +1,11 @@
-var mqtt = require('mqtt'),
-    client = mqtt.connect('mqtt://admin:password@192.168.2.2:61613');
+var mqtt = require('mqtt');
+var client = mqtt.connect({
+  host:'192.168.11.5',
+  port:61613,
+  username:'admin',
+  password:'password'
+});
+
 var wsServer = require('ws').Server;
 
 var http = require('http'),
@@ -9,12 +15,12 @@ var http = require('http'),
 
 var konashiWs = new wsServer({"port":8016});
 
-client.subscribe('Konashi/#');
+client.subscribe('nocd5@github/#');
 
 client.on('message', function(topic, message) {
   data = JSON.parse(message);
   t = topic.split("/");
-  if(t[1] == 'Uzuki') {
+  if(t[1] == 'Koshian') {
     console.log(topic + ": " + message);
     var dataAry = [data["date"], data["temp"], data["rh"]];
     konashiWs.clients.forEach(function(c){
