@@ -1,40 +1,42 @@
 var mqtt = require('mqtt');
-var client = mqtt.connect({
-  host:'192.168.11.5',
-  port:61613,
-  username:'admin',
-  password:'password'
-});
-
+var http = require("http");
+var express = require('express');
 var wsServer = require('ws').Server;
 
-var http = require('http'),
-    express = require('express'),
-    app = express(),
-    server = http.createServer(app);
+/*
+  execute the following
+  > heroku config:add MQTT_HOST=MqttBrokerHost
+  > heroku config:add MQTT_PORT=MqttBrokerPort
+  > heroku config:add MQTT_USERNAME=UserName
+  > heroku config:add MQTT_PASSWORD=PassWord
+*/
+var client = mqtt.connect({
+  host:process.env.MQTT_HOST,
+  port:process.env.MQTT_PORT,
+  username:process.env.MQTT_USERNAME,
+  password:process.env.MQTT_PASSWORD
+});
 
-var konashiWs = new wsServer({"port":8016});
+var port = process.env.PORT || 8080;
+
+var app = express();
+app.use(express.static(__dirname + '/public'));
+
+var server = http.createServer(app)
+server.listen(port)
+
+var wss = new wsServer({"server":server});
 
 client.subscribe('nocd5@github/#');
-
 client.on('message', function(topic, message) {
   data = JSON.parse(message);
   t = topic.split("/");
   if(t[1] == 'Koshian') {
     console.log(topic + ": " + message);
     var dataAry = [data["date"], data["temp"], data["rh"]];
-    konashiWs.clients.forEach(function(c){
+    wss.clients.forEach(function(c){
       c.send(JSON.stringify(dataAry));
     });
   }
-});
-
-// Start Http Server
-app.use(express.static(__dirname + '/public'));
-server.listen(8080);
-console.log('Server running');
-console.log('root :' + __dirname + '/public');
-server.on('connection', function(socket){
-  console.log('connected: ' + socket.remoteAddress);
 });
 

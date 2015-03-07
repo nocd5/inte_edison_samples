@@ -1,9 +1,16 @@
 var mqtt = require('mqtt');
+/*
+  execute the following
+  > heroku config:add MQTT_HOST=MqttBrokerHost
+  > heroku config:add MQTT_PORT=MqttBrokerPort
+  > heroku config:add MQTT_USERNAME=UserName
+  > heroku config:add MQTT_PASSWORD=PassWord
+*/
 var client = mqtt.connect({
-  host:'192.168.11.5',
-  port:61613,
-  username:'admin',
-  password:'password'
+  host:process.env.MQTT_HOST,
+  port:process.env.MQTT_PORT,
+  username:process.env.MQTT_USERNAME,
+  password:process.env.MQTT_PASSWORD
 });
 
 var noble = require('noble');

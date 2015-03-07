@@ -1,6 +1,11 @@
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+
 <script src="http://ccchart.com/js/ccchart.js" charset="utf-8"></script>
 <canvas id="chart1"></canvas>
 <script>
+
+var host = location.origin.replace(/^http/, 'ws')
+
 var chartdata = {
   "config": {
     "title": "Konashi/Uzuki",
@@ -13,7 +18,7 @@ var chartdata = {
     "markerWidth": 5,
     "width": window.innerWidth - 30,
     "height": window.innerHeight - 30,
-    "maxWsColLen": 500,
+    "maxWsColLen": 30,
     "paddingRight": 150,
     "minY": 0,
     "maxY": 100,
@@ -31,7 +36,7 @@ var data = JSON.parse(JSON.stringify(chartdata));
 
 ccchart.wsCloseAll();
 ccchart.init('chart1', data)
-       .ws('ws://192.168.11.5:8016')
+       .ws(host)
        .on('message', ccchart.wscase.oneColAtATime);
 
 window.addEventListener('resize', function(){
