@@ -1,0 +1,19 @@
+{
+  "name": "application-name",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node subscriber.js"
+  },
+
+  "engine": {
+    "node": "v0.10.x",
+    "npm": "1.3.x"
+  },
+  "dependencies": {
+    "express": "4.12.2",
+    "mqtt": "*",
+    "http": "*",
+    "ws": "*"
+  }
+}
