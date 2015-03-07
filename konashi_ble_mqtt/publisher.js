@@ -79,7 +79,6 @@ function publishData(temp, rh){
 }
 
 noble.on('discover', function(peripheral){
-  noble.stopScanning();
   console.log('peripheral with UUID ' + peripheral.uuid + ' found');
   var advertisement = peripheral.advertisement;
   for (var i in advertisement.serviceUuids){
@@ -88,6 +87,15 @@ noble.on('discover', function(peripheral){
   var localName = advertisement.localName;
   if (localName){
     console.log('Local Name = ' + localName);
+    if (localName.indexOf('Koshian') != -1){
+      noble.stopScanning();
+    }
+    else {
+      return;
+    }
+  }
+  else {
+      return;
   }
 
   peripheral.connect(function(error){
@@ -120,7 +128,7 @@ noble.on('discover', function(peripheral){
                   }
                 });
               });
-            }, 3000);
+            }, 5000);
           }
         );
       }
