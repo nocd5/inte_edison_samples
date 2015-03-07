@@ -1,10 +1,10 @@
 var mqtt = require('mqtt');
 /*
   execute the following
-  > heroku config:add MQTT_HOST=MqttBrokerHost
-  > heroku config:add MQTT_PORT=MqttBrokerPort
-  > heroku config:add MQTT_USERNAME=UserName
-  > heroku config:add MQTT_PASSWORD=PassWord
+  > export MQTT_HOST=MqttBrokerHost
+  > export MQTT_PORT=MqttBrokerPort
+  > export MQTT_USERNAME=UserName
+  > export MQTT_PASSWORD=PassWord
 */
 var client = mqtt.connect({
   host:process.env.MQTT_HOST,
