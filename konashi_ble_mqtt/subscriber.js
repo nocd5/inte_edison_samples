@@ -27,15 +27,26 @@ server.listen(port)
 
 var wss = new wsServer({"server":server});
 
+var bufferSize = 30;
+var dataBuffer = new Array(bufferSize);
+for (var i = 0; i < bufferSize; i++){
+  dataBuffer[i] = new Array(3);
+  for (var j = 0; j < 3; j++){
+    dataBuffer[i][j] = 0;
+  }
+}
+
 client.subscribe('nocd5@github/#');
 client.on('message', function(topic, message) {
   data = JSON.parse(message);
   t = topic.split("/");
-  if(t[1] == 'Koshian') {
+  if (t[1] == 'Koshian'){
     console.log(topic + ": " + message);
     var dataAry = [data["date"], data["temp"], data["rh"]];
+    dataBuffer.push(dataAry);
+    dataBuffer = dataBuffer.slice(dataBuffer.length - bufferSize);
     wss.clients.forEach(function(c){
-      c.send(JSON.stringify(dataAry));
+      c.send(JSON.stringify(dataBuffer));
     });
   }
 });

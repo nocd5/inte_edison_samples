@@ -37,7 +37,7 @@ var data = JSON.parse(JSON.stringify(chartdata));
 ccchart.wsCloseAll();
 ccchart.init('chart1', data)
        .ws(host)
-       .on('message', ccchart.wscase.oneColAtATime);
+       .on('message', ccchart.wscase.someColsAtATime);
 
 window.addEventListener('resize', function(){
   data["config"]["width"] = window.innerWidth - 30;
