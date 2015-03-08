@@ -46,12 +46,53 @@ var chartdata = {
   ]
 };
 
+// wscase.oneColAtATime base
+ccchart.wscase.oneColAtATime = function(msg){
+  console.log("dataConverter");
+  // 一度に1列ずつ [ [["2013"],[435],[600]],
+  //                 [["2014"],[453],[606]],
+  //                 [["2015"],[448],[609]]
+  //               ]
+  // といった配列で届く場合
+  try { var msgs = JSON.parse(msg.data); } catch(e) { return; }
+
+  if (typeof msgs === 'string'){
+    if (this.wsDbg) console.log('ws message type is bad, it is string : ' + msgs);
+    return;
+  }
+  var that = ccchart.ops[this.op.id];
+
+  if (that._wsThinout(this, this.wsThinOutInterval)) return; //ws受信データを間引く
+
+  for (var i = 0; i < msgs.length; i++){
+    for (var j = 0; j < msgs[i].length; j++){
+      if (!that.op.data[j]) continue;
+      that.op.data[j].length = 1;
+    }
+  }
+  for (var i = 0; i < msgs.length; i++){
+    for (var j = 0; j < msgs[i].length; j++){
+      if (!that.op.data[j]) continue;
+      var rowTitle = that.op.data[j].shift(); // 先頭を行タイトルとして削除
+      if (that.op.data[j].length <= that.maxWsColLen){
+        that.op.data[j][i] = (msgs[i][j]);
+      }
+      that.op.data[j].unshift(rowTitle); // 先頭へ行タイトルを戻す
+    }
+  }
+  that.ops[that.id]['s'] = (new Date).getTime(); //描画開始時間
+  //再起へ
+  ccchart.init(that.id, that.op, function () {
+    that.ops[that.id].e = (new Date).getTime(); //描画終了時間
+  });
+}
+
 var data = JSON.parse(JSON.stringify(chartdata));
 
 ccchart.wsCloseAll();
 ccchart.init('chart1', data)
        .ws(host)
-       .on('message', ccchart.wscase.someColsAtATime);
+       .on('message', ccchart.wscase.oneColAtATime);
 
 window.addEventListener('resize', function(){
   data["config"]["width"] = window.innerWidth - 30;
