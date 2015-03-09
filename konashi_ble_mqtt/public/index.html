@@ -1,66 +1,85 @@
 <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+<script type="text/javascript" src="//www.google.com/jsapi"></script>
 
-<script src="http://ccchart.com/js/ccchart.js" charset="utf-8"></script>
-<canvas id="chart1"></canvas>
-<script>
+<input type="button" value="connect" onClick="connect()" />
+<input type="button" value="disconnect" onClick="disconnect()" />
+<div id="chart1">Now Loading ...</div>
 
-var host = location.origin.replace(/^http/, 'ws')
+<script type="text/javascript">
 
-var chartdata = {
-  "config": {
-    "title": "Konashi/Uzuki",
-    "type": "line",
-    "bg": "#fff",
-    "textColor": "#000",
-    "useMarker": "css-ring",
-    "lineWidth": 2,
-    "borderWidth": 5,
-    "markerWidth": 5,
-    "width": window.innerWidth - 30,
-    "height": window.innerHeight - 30,
-    "maxWsColLen": 30,
-    "paddingRight": 150,
-    "minY": 0,
-    "maxY": 100,
-    "colorSet": ["#C0504D", "#4F81BD", "#9BBB59"],
-    "cssTooltip": '{ width:150px; \
-                     height:49px; \
-                     margin-top:50px; \
-                     box-shadow: 6px 6px 6px rgba(000,000,000,0.6); \
-                     border: 3px solid #000; \
-                     border-radius: 10px; \
-                     font-size: 12px; \
-                     line-height: 14px; \
-                     padding-top: 7px; \
-                     text-align: center; \
-                     text-shadow: 0px; \
-                     background: solid #fff;\
-                   }',
-    "cssTooltipFukidashi": '{}'
+var host = location.origin.replace(/^http/, 'ws').replace(/\/$/,'');
+var ws = null;
+var chart = null;
+var autoReconnect = true;
+var currentData = null
+var chart1Options = {
+  title: 'Koshian/Uzuki',
+  width: window.innerWidth - 10,
+  height: window.innerHeight - 60,
+  pointSize: 8,
+  chartArea: {'width':'80%', 'height':'65%', 'left':50 },
+  hAxis: { title:'Time', titleTextStyle:{italic:false}, slantedText:true },
+  vAxis: {
+    title:'Values',
+    titleTextStyle:{italic:false},
+    maxValue: 100,
+    minValue: 0,
   },
-
-  "data": [
-    ["Time"],
-    ["Temperature[degC]"],
-    ["Humidity[%RH]"],
-  ]
+ explorer: { actions: ['dragToZoom', 'rightClickToReset'], maxZoomIn:0.01 }
 };
 
-// detour bug
-ccchart.wscase.oneColAtATime = ccchart.wscase.someColsAtATime;
-
-var data = JSON.parse(JSON.stringify(chartdata));
-
-ccchart.wsCloseAll();
-ccchart.init('chart1', data)
-       .ws(host)
-       .on('message', ccchart.wscase.someColsAtATime);
-
 window.addEventListener('resize', function(){
-  data["config"]["width"] = window.innerWidth - 30;
-  data["config"]["height"] = window.innerHeight - 30;
-  ccchart.init('chart1', data);
+  chart1Options["width"] = window.innerWidth - 10;
+  chart1Options["height"] = window.innerHeight - 60;
+  drawChart();
 });
+
+google.load('visualization', '1.0', {'packages':['corechart']});
+google.setOnLoadCallback(function(){
+  connect();
+});
+
+function initialize(){
+  this.ws = new(window.WebSocket || window.MozWebSocket)(this.host, "websocket");
+  this.ws.addEventListener('open', function(event){
+    console.log("connected");
+  });
+  this.ws.addEventListener('close', function(event){
+    console.log("disconnected");
+    if (autoReconnect === true){
+      this.initialize();
+    }
+  });
+  this.chart = new google.visualization.LineChart(document.getElementById('chart1'));
+  this.ws.addEventListener('message', function(message){
+    console.log(JSON.parse(message.data).map( function(e){ if (e[0] == 0) e[0] = "" ; return e} ));
+    drawChart(JSON.parse(message.data).map( function(e){ if (e[0] == 0) e[0] = "" ; return e} ));
+  });
+}
+
+function drawChart(values){
+  if (values == null){
+    if (this.currentData != null){
+      this.chart.draw(this.currentData, this.chart1Options);
+    }
+    return;
+  }
+  values.unshift(['Time', 'Temperature[degC]', 'Humidity[%RH]']);
+  var data = google.visualization.arrayToDataTable(values);
+  this.chart.draw(data, this.chart1Options);
+  this.currentData = data;
+}
+
+function disconnect(){
+  this.autoReconnect = false;
+  this.ws.close();
+  this.ws = null;
+}
+
+function connect(){
+  this.initialize();
+  var autoReconnect = true;
+}
 
 </script>
 
