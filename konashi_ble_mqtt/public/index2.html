@@ -18,7 +18,7 @@ var chart1Options = {
   height: window.innerHeight - 60,
   pointSize: 8,
   chartArea: {'width':'80%', 'height':'65%', 'left':50 },
-  hAxis: { title:'Time', titleTextStyle:{italic:false} },
+  hAxis: { title:'Time', titleTextStyle:{italic:false}, slantedText:true },
   vAxis: {
     title:'Values',
     titleTextStyle:{italic:false},
@@ -52,7 +52,8 @@ function initialize(){
   });
   this.chart = new google.visualization.LineChart(document.getElementById('chart1'));
   this.ws.addEventListener('message', function(message){
-    drawChart(JSON.parse(message.data));
+    console.log(JSON.parse(message.data).map( function(e){ if (e[0] == 0) e[0] = "" ; return e} ));
+    drawChart(JSON.parse(message.data).map( function(e){ if (e[0] == 0) e[0] = "" ; return e} ));
   });
 }
 
