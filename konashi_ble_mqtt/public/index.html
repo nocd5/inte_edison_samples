@@ -52,8 +52,16 @@ function initialize(){
   });
   this.chart = new google.visualization.LineChart(document.getElementById('chart1'));
   this.ws.addEventListener('message', function(message){
-    console.log(JSON.parse(message.data).map( function(e){ if (e[0] == 0) e[0] = "" ; return e} ));
-    drawChart(JSON.parse(message.data).map( function(e){ if (e[0] == 0) e[0] = "" ; return e} ));
+    drawChart(JSON.parse(message.data).map( function(e){
+      if (e[0] == 0){
+        e[0] = null;
+      }
+      else {
+        var dateArray = e[0].split(':').map(function(e){return Number(e)})
+        e[0] = new Date(dateArray[0], dateArray[1]-1, dateArray[2], dateArray[3], dateArray[4], dateArray[5]);
+      }
+      return e;
+    }));
   });
 }
 
@@ -64,10 +72,20 @@ function drawChart(values){
     }
     return;
   }
-  values.unshift(['Time', 'Temperature[degC]', 'Humidity[%RH]']);
-  var data = google.visualization.arrayToDataTable(values);
-  this.chart.draw(data, this.chart1Options);
-  this.currentData = data;
+  var dataTable = new google.visualization.DataTable();
+  dataTable.addColumn('datetime', 'Time');
+  dataTable.addColumn('number', 'Temperature[degC]');
+  dataTable.addColumn('number', 'Humidity[%RH]');
+
+  var dataView = new google.visualization.DataView(dataTable);
+  dataView.setColumns([{calc: function(data, row){
+    return data.getValue(row, 0);
+  }, type:'datetime'}, 1, 2]);
+
+  dataTable.addRows(values);
+
+  this.chart.draw(dataView, this.chart1Options);
+  this.currentData = dataView;
 }
 
 function disconnect(){
