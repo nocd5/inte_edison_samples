@@ -25,7 +25,7 @@ app.use(express.static(__dirname + '/public'));
 var server = http.createServer(app)
 server.listen(port)
 
-var wss = new wsServer({"server":server});
+var wss = new wsServer({"server": server});
 
 var bufferSize = 30;
 var dataBuffer = new Array(bufferSize);
@@ -37,7 +37,7 @@ for (var i = 0; i < bufferSize; i++){
 }
 
 client.subscribe('nocd5@github/#');
-client.on('message', function(topic, message) {
+client.on('message', function(topic, message){
   data = JSON.parse(message);
   t = topic.split("/");
   if (t[1] == 'Koshian'){
