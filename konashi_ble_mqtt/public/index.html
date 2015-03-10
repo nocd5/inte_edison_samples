@@ -11,6 +11,8 @@ var host = location.origin.replace(/^http/, 'ws')
 var ws = null;
 var chart = null;
 var autoReconnect = true;
+const maxRetry = 10;
+var retryCount = 0;
 var currentData = null
 var chart1Options = {
   title: 'Koshian/Uzuki',
@@ -59,11 +61,13 @@ function initialize(){
   this.ws = new(window.WebSocket || window.MozWebSocket)(this.host, "websocket");
   this.ws.addEventListener('open', function(event){
     console.log("connected");
+    retryCount = 0;
   });
   this.ws.addEventListener('close', function(event){
     console.log("disconnected");
-    if (autoReconnect === true){
-      this.initialize();
+    if ((autoReconnect === true) && (maxRetry > retryCount++)){
+      console.log("retry count : " + retryCount);
+      top.initialize();
     }
   });
   this.chart = new google.visualization.LineChart(document.getElementById('chart1'));
