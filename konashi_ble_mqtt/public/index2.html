@@ -4,7 +4,7 @@
 <canvas id="chart1"></canvas>
 <script>
 
-var host = location.origin.replace(/^http/, 'ws')
+var host = location.origin.replace(/^http/, 'ws');
 
 var chartdata = {
   "config": {
@@ -45,9 +45,6 @@ var chartdata = {
     ["Humidity[%RH]"],
   ]
 };
-
-// detour bug
-ccchart.wscase.oneColAtATime = ccchart.wscase.someColsAtATime;
 
 var data = JSON.parse(JSON.stringify(chartdata));
 
