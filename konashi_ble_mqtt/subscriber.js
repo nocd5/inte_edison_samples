@@ -26,7 +26,7 @@ var server = http.createServer(app)
 server.listen(port)
 
 
-var bufferSize = 30;
+var bufferSize = process.env.DATA_BUFFER_SIZE;
 var dataBuffer = new Array(bufferSize);
 for (var i = 0; i < bufferSize; i++){
   dataBuffer[i] = new Array(3);
