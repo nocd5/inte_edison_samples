@@ -1,5 +1,5 @@
 <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-<script type="text/javascript" src="//www.google.com/jsapi"></script>
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 
 <input type="button" value="connect" onClick="connect()" />
 <input type="button" value="disconnect" onClick="disconnect()" />
@@ -7,7 +7,7 @@
 
 <script type="text/javascript">
 
-var host = location.origin.replace(/^http/, 'ws').replace(/\/$/,'');
+var host = 'ws://intel-edison-mqtt.herokuapp.com';
 var ws = null;
 var chart = null;
 var autoReconnect = true;
@@ -16,16 +16,32 @@ var chart1Options = {
   title: 'Koshian/Uzuki',
   width: window.innerWidth - 10,
   height: window.innerHeight - 60,
-  pointSize: 8,
-  chartArea: {'width':'80%', 'height':'65%', 'left':50 },
-  hAxis: { title:'Time', titleTextStyle:{italic:false}, slantedText:true },
+  pointSize: 5,
+  chartArea: {'width':'80%', 'height':'65%', 'left':60 },
+  hAxis: {
+      title:'Time',
+      titleTextStyle:{italic:false},
+      slantedText:true,
+      gridlines: {
+        units: {
+          years: {format: ["YYYY"]},
+          months: {format: ["YYYY/MM"]},
+          days: {format: ["YYYY/MM/DD"]},
+          hours: {format: ["YYYY/MM/DD HH"]},
+          minutes: {format: ["HH:mm"]},
+          seconds: {format: ["HH:mm:ss"]},
+          milliseconds: {format: ['HH:mm:ss.SSS']},
+        }
+      },
+  },
   vAxis: {
     title:'Values',
     titleTextStyle:{italic:false},
+    slantedText:true,
     maxValue: 100,
     minValue: 0,
   },
- explorer: { actions: ['dragToZoom', 'rightClickToReset'], maxZoomIn:0.01 }
+  explorer: { actions: ['dragToZoom', 'rightClickToReset'], maxZoomIn:0.01 },
 };
 
 window.addEventListener('resize', function(){
@@ -34,7 +50,7 @@ window.addEventListener('resize', function(){
   drawChart();
 });
 
-google.load('visualization', '1.0', {'packages':['corechart']});
+google.load('visualization', '1.0', {'packages':['corechart'], 'language': 'en'});
 google.setOnLoadCallback(function(){
   connect();
 });
@@ -72,20 +88,17 @@ function drawChart(values){
     }
     return;
   }
+
   var dataTable = new google.visualization.DataTable();
   dataTable.addColumn('datetime', 'Time');
   dataTable.addColumn('number', 'Temperature[degC]');
   dataTable.addColumn('number', 'Humidity[%RH]');
-
-  var dataView = new google.visualization.DataView(dataTable);
-  dataView.setColumns([{calc: function(data, row){
-    return data.getValue(row, 0);
-  }, type:'datetime'}, 1, 2]);
-
   dataTable.addRows(values);
+  var formatter = new google.visualization.DateFormat({pattern: 'yyyy/MM/dd HH:mm:ss'});
+  formatter.format(dataTable, 0);
+  this.chart.draw(dataTable, this.chart1Options);
 
-  this.chart.draw(dataView, this.chart1Options);
-  this.currentData = dataView;
+  this.currentData = dataTable;
 }
 
 function disconnect(){
