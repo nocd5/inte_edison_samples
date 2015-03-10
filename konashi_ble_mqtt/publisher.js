@@ -105,6 +105,15 @@ noble.on('discover', function(peripheral){
       return;
   }
 
+  var timer = null;
+
+  peripheral.on('disconnect', function(){
+    if (timer != null){
+      clearInterval(timer);
+    }
+    noble.startScanning();
+  });
+
   peripheral.connect(function(error){
     if (error) console.log('connect error: ' + error);
     console.log('connected to ' + peripheral.uuid);
@@ -125,7 +134,7 @@ noble.on('discover', function(peripheral){
             console.log('characteristics.length: ' + characteristics.length);
             // enable I2C
             characteristics[0].write(new Buffer([KOSHIAN_I2C_MODE_ENABLE_100K]), false);
-            setInterval(function(){
+            timer = setInterval(function(){
               readReg(characteristics, ADDR_Si7013, CMD_TEMP, 2, function(temp_raw){
                 readReg(characteristics, ADDR_Si7013, CMD_RH, 2, function(rh_raw){
                   if (temp_raw && rh_raw){
