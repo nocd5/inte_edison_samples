@@ -25,7 +25,6 @@ app.use(express.static(__dirname + '/public'));
 var server = http.createServer(app)
 server.listen(port)
 
-var wss = new wsServer({"server": server});
 
 var bufferSize = 30;
 var dataBuffer = new Array(bufferSize);
@@ -35,6 +34,11 @@ for (var i = 0; i < bufferSize; i++){
     dataBuffer[i][j] = 0;
   }
 }
+
+var wss = new wsServer({"server": server});
+wss.on('connection', function(ws){
+  ws.send(JSON.stringify(dataBuffer));
+});
 
 client.subscribe('nocd5@github/#');
 client.on('message', function(topic, message){
