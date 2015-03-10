@@ -9,6 +9,7 @@ var wsServer = require('ws').Server;
   > heroku config:add MQTT_PORT=MqttBrokerPort
   > heroku config:add MQTT_USERNAME=UserName
   > heroku config:add MQTT_PASSWORD=PassWord
+  > heroku config:add DATA_BUFFER_SIZE=BufferSize
 */
 var client = mqtt.connect({
   host:process.env.MQTT_HOST,
