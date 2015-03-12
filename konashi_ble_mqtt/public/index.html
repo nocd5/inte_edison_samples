@@ -77,8 +77,7 @@ function initialize(){
         e[0] = null;
       }
       else {
-        var dateArray = e[0].split(':').map(function(e){return Number(e)})
-        e[0] = new Date(dateArray[0], dateArray[1]-1, dateArray[2], dateArray[3], dateArray[4], dateArray[5]);
+        e[0] = new Date(e[0]);
       }
       return e;
     }));

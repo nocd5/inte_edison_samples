@@ -81,7 +81,7 @@ noble.on('stateChange', function(state){
 function publishData(temp, rh){
   var date = new Date();
   var data = {"temp":temp, "rh":rh}
-  data["date"] = date.toFormat("YYYY:MM:DD:HH24:MI:SS");
+  data["date"] = date.toString();
   client.publish('nocd5@github/Koshian', JSON.stringify(data));
 }
 
