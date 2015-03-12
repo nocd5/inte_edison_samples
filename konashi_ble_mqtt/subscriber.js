@@ -37,14 +37,6 @@ for (var i = 0; i < bufferSize; i++){
 }
 
 pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-  var query = client.query("insert into temprh (temp,rh,date) values('"
-      + 10.123 + "','" + 22.345 + "','" + "2015:03:13:01:10:44" + "');");
-  query.on('end', function(row,err) {
-    console.log("query end");
-  });
-  query.on('error', function(error) {
-    console.log("ERROR!");
-  });
   client.query('SELECT * FROM temprh', function(err, result) {
     done();
     if(err) return console.error(err);
@@ -63,6 +55,18 @@ client.on('message', function(topic, message){
   t = topic.split("/");
   if (t[1] == 'Koshian'){
     console.log(topic + ": " + message);
+
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+      var query = client.query("insert into temprh (temp,rh,date) values('"
+          + data["temp"] + "','" + data["rh"] + "','" + data["date"] + "');");
+      query.on('end', function(row,err) {
+        console.log("query end");
+      });
+      query.on('error', function(error) {
+        console.log("ERROR!");
+      });
+    });
+
     var dataAry = [data["date"], data["temp"], data["rh"]];
     dataBuffer.push(dataAry);
     dataBuffer = dataBuffer.slice(dataBuffer.length - bufferSize);
