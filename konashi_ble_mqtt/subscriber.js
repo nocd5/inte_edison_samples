@@ -42,6 +42,11 @@ pg.connect(process.env.DATABASE_URL, function(err, client, done) {
     if(err) return console.error(err);
     console.log(result.rows);
   });
+  client.query('DELETE FROM temprh', function(err, result) {
+    done();
+    if(err) return console.error(err);
+    console.log(result.rows);
+  });
 });
 
 var wss = new wsServer({"server": server});
@@ -57,7 +62,7 @@ client.on('message', function(topic, message){
     console.log(topic + ": " + message);
 
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-      var query = client.query("insert into temprh (temp,rh,date) values('"
+      var query = client.query("INSERT INTO temprh (temp,rh,date) values('"
           + data["temp"] + "','" + data["rh"] + "','" + data["date"] + "');");
       query.on('end', function(row,err) {
         console.log("query end");
