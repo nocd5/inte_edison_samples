@@ -2,6 +2,7 @@ var mqtt = require('mqtt');
 var http = require("http");
 var express = require('express');
 var wsServer = require('ws').Server;
+var pg = require('pg');
 
 /*
   execute the following
@@ -26,7 +27,6 @@ app.use(express.static(__dirname + '/public'));
 var server = http.createServer(app)
 server.listen(port)
 
-
 var bufferSize = process.env.DATA_BUFFER_SIZE;
 var dataBuffer = new Array(bufferSize);
 for (var i = 0; i < bufferSize; i++){
@@ -35,6 +35,14 @@ for (var i = 0; i < bufferSize; i++){
     dataBuffer[i][j] = 0;
   }
 }
+
+pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  client.query('SELECT * FROM temprh', function(err, result) {
+    done();
+    if(err) return console.error(err);
+    console.log(result.rows);
+  });
+});
 
 var wss = new wsServer({"server": server});
 wss.on('connection', function(ws){
