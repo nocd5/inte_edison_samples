@@ -69,7 +69,7 @@ function startServer(init){
     if (t[1] == 'Koshian'){
       console.log(topic + ": " + message);
 
-      pg.connect(process.env.DATABASE_URL, function(err, client, done){
+      pg.connect(process.env.DATABASE_URL, function(err, client){
         var query = client.query("INSERT INTO temprh (date, temp, rh) values("
             + "'" + data["date"] + "'" + ", " + data["temp"] + ", " + data["rh"] + ");");
         query.on('end', function(row,err){
