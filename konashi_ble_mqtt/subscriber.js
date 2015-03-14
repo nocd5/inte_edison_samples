@@ -37,15 +37,15 @@ pg.connect(process.env.DATABASE_URL, function(err, client){
       if (a["date"] > b["date"]) return 1;
       return 0;
     });
-    startServer(rows, client);
-    client.end();
+    startServer(rows);
+    client.end()
   });
   query.on('error', function(error){
     console.log("ERROR!!" + error);
   });
 });
 
-function startServer(init, client){
+function startServer(init){
   var port = process.env.PORT || 8080;
   var app = express();
   app.use(express.static(__dirname + '/public'));
@@ -69,7 +69,8 @@ function startServer(init, client){
     if (t[1] == 'Koshian'){
       console.log(topic + ": " + message);
 
-      if (client != null){
+      pg.connect(process.env.DATABASE_URL, function(err, client){
+        if (err) response.send("Could not connect to DB: " + err);
         client.query(
           "INSERT INTO temprh (date, temp, rh) values($1, $2, $3) RETURNING id;",
           [ data["date"], data["temp"], data["rh"] ],
@@ -79,9 +80,10 @@ function startServer(init, client){
             } else {
               console.log('row inserted with id: ' + result.rows[0].id);
             }
+            client.end();
           }
         );
-      }
+      });
 
       dataBuffer.push(data);
       dataBuffer = dataBuffer.slice(dataBuffer.length - bufferSize);
