@@ -26,7 +26,6 @@ pg.connect(process.env.DATABASE_URL, function(err, client){
   query.on('row', function(row) {
     row["temp"] = Number(row["temp"]);
     row["rh"] = Number(row["rh"]);
-    console.log(row);
     rows.push(row);
   });
   query.on('end', function(row,err) {
