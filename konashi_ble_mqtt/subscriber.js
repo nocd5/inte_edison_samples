@@ -72,7 +72,7 @@ function startServer(init){
       pg.connect(process.env.DATABASE_URL, function(err, client){
         if (err) response.send("Could not connect to DB: " + err);
         var query = client.query(
-          "INSERT INTO temprh (date, temp, rh) values($1, $2, $3);",
+          "INSERT INTO temprh (date, temp, rh) values($1, $2, $3) RETURNING id;",
           [ data["date"], data["temp"], data["rh"] ],
           function (err, result){
             if (err) {
