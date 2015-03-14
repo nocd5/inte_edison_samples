@@ -24,6 +24,9 @@ pg.connect(process.env.DATABASE_URL, function(err, client){
   var rows = [];
   var query = client.query('SELECT date, temp, rh FROM temprh;');
   query.on('row', function(row) {
+    row["temp"] = Number(row["temp"]);
+    row["rh"] = Number(row["rh"]);
+    console.log(row);
     rows.push(row);
   });
   query.on('end', function(row,err) {
@@ -68,8 +71,8 @@ function startServer(init){
       console.log(topic + ": " + message);
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        var query = client.query("INSERT INTO temprh (date, temp, rh) values('"
-            + data["date"] + "', '" + data["temp"] + "', '" + data["rh"] + "');");
+        var query = client.query("INSERT INTO temprh (date, temp, rh) values("
+            + "'" + data["date"] + "'" + ", " + data["temp"] + ", " + data["rh"] + ");");
         query.on('end', function(row,err) {
         });
         query.on('error', function(error) {
