@@ -20,22 +20,22 @@ var client = mqtt.connect({
   password:process.env.MQTT_PASSWORD
 });
 
-var port = process.env.PORT || 8080;
-
-var app = express();
-app.use(express.static(__dirname + '/public'));
-
 pg.connect(process.env.DATABASE_URL, function(err, client){
   var rows = [];
   var query = client.query('SELECT date, temp, rh FROM temprh;');
   query.on('row', function(row) {
-    rows.push([row["date"], Number(row["temp"]), Number(row["rh"])]);
+    rows.push(row);
   });
   query.on('end', function(row,err) {
     var date = new Date();
     date.setDate(date.getDate() - 1);
     var expireDate = date.toFormat("YYYY-MM-DD HH24:MI:SS");
     client.query("DELETE FROM temprh WHERE date < '" + expireDate + "';");
+    rows = rows.sort(function(a, b){
+      if (a["date"] < b["date"]) return -1;
+      if (a["date"] > b["date"]) return 1;
+      return 0;
+    });
     startServer(rows);
   });
   query.on('error', function(error) {
@@ -44,6 +44,10 @@ pg.connect(process.env.DATABASE_URL, function(err, client){
 });
 
 function startServer(init){
+  var port = process.env.PORT || 8080;
+  var app = express();
+  app.use(express.static(__dirname + '/public'));
+
   var server = http.createServer(app)
   server.listen(port)
 
@@ -73,8 +77,7 @@ function startServer(init){
         });
       });
 
-      var dataAry = [data["date"], data["temp"], data["rh"]];
-      dataBuffer.push(dataAry);
+      dataBuffer.push(data);
       dataBuffer = dataBuffer.slice(dataBuffer.length - bufferSize);
       wss.clients.forEach(function(c){
         c.send(JSON.stringify(dataBuffer));
