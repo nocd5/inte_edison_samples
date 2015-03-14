@@ -31,7 +31,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client){
   query.on('end', function(row,err){
     var date = new Date();
     date.setDate(date.getDate() - 1);
-    client.query("DELETE FROM temprh WHERE date < $1;", date);
+    client.query("DELETE FROM temprh WHERE date < $1;", [ date ]);
     rows = rows.sort(function(a, b){
       if (a["date"] < b["date"]) return -1;
       if (a["date"] > b["date"]) return 1;
