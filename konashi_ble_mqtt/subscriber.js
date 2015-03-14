@@ -38,7 +38,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client){
       return 0;
     });
     startServer(rows, client);
-    client.close();
+    client.end();
   });
   query.on('error', function(error){
     console.log("ERROR!!" + error);
