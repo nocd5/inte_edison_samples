@@ -79,7 +79,6 @@ function startServer(init, client){
             } else {
               console.log('row inserted with id: ' + result.rows[0].id);
             }
-            client.end();
           }
         );
       }
