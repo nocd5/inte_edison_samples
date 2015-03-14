@@ -31,8 +31,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client){
   query.on('end', function(row,err){
     var date = new Date();
     date.setDate(date.getDate() - 1);
-    var expireDate = date.toFormat("YYYY-MM-DD HH24:MI:SS");
-    client.query("DELETE FROM temprh WHERE date < '" + expireDate + "';");
+    client.query("DELETE FROM temprh WHERE date < $1;", date);
     rows = rows.sort(function(a, b){
       if (a["date"] < b["date"]) return -1;
       if (a["date"] > b["date"]) return 1;
@@ -71,7 +70,7 @@ function startServer(init){
 
       pg.connect(process.env.DATABASE_URL, function(err, client){
         if (err) response.send("Could not connect to DB: " + err);
-        var query = client.query(
+        client.query(
           "INSERT INTO temprh (date, temp, rh) values($1, $2, $3) RETURNING id;",
           [ data["date"], data["temp"], data["rh"] ],
           function (err, result){
@@ -80,6 +79,7 @@ function startServer(init){
             } else {
               console.log('row inserted with id: ' + result.rows[0].id);
             }
+            client.end();
           }
         );
       });
