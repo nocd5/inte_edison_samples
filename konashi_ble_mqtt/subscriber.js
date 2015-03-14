@@ -39,6 +39,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client){
     });
     startServer(rows);
   });
+  client.on('drain', client.end.bind(client));
   query.on('error', function(error){
     console.log("ERROR!!" + error);
   });
