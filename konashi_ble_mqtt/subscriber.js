@@ -23,12 +23,12 @@ var client = mqtt.connect({
 pg.connect(process.env.DATABASE_URL, function(err, client){
   var rows = [];
   var query = client.query('SELECT date, temp, rh FROM temprh;');
-  query.on('row', function(row) {
+  query.on('row', function(row){
     row["temp"] = Number(row["temp"]);
     row["rh"] = Number(row["rh"]);
     rows.push(row);
   });
-  query.on('end', function(row,err) {
+  query.on('end', function(row,err){
     var date = new Date();
     date.setDate(date.getDate() - 1);
     var expireDate = date.toFormat("YYYY-MM-DD HH24:MI:SS");
@@ -40,7 +40,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client){
     });
     startServer(rows);
   });
-  query.on('error', function(error) {
+  query.on('error', function(error){
     console.log("ERROR!!" + error);
   });
 });
@@ -69,12 +69,12 @@ function startServer(init){
     if (t[1] == 'Koshian'){
       console.log(topic + ": " + message);
 
-      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+      pg.connect(process.env.DATABASE_URL, function(err, client, done){
         var query = client.query("INSERT INTO temprh (date, temp, rh) values("
             + "'" + data["date"] + "'" + ", " + data["temp"] + ", " + data["rh"] + ");");
-        query.on('end', function(row,err) {
+        query.on('end', function(row,err){
         });
-        query.on('error', function(error) {
+        query.on('error', function(error){
           console.log("ERROR!");
         });
       });
