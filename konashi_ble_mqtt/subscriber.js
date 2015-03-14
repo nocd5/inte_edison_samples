@@ -37,7 +37,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client){
       if (a["date"] > b["date"]) return 1;
       return 0;
     });
-    client.on('drain', client.end.bind(client));
+    client.end.bind(client);
     startServer(rows);
   });
   query.on('error', function(error){
