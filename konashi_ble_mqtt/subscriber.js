@@ -13,7 +13,7 @@ var date = require('date-utils');
   > heroku config:add MQTT_PASSWORD=PassWord
   > heroku config:add DATA_BUFFER_SIZE=BufferSize
 */
-var client = mqtt.connect({
+var mqtt_client = mqtt.connect({
   host:process.env.MQTT_HOST,
   port:process.env.MQTT_PORT,
   username:process.env.MQTT_USERNAME,
@@ -37,15 +37,15 @@ pg.connect(process.env.DATABASE_URL, function(err, client){
       if (a["date"] > b["date"]) return 1;
       return 0;
     });
-    client.end();
-    startServer(rows);
+    startServer(rows, client);
+    client.close();
   });
   query.on('error', function(error){
     console.log("ERROR!!" + error);
   });
 });
 
-function startServer(init){
+function startServer(init, client){
   var port = process.env.PORT || 8080;
   var app = express();
   app.use(express.static(__dirname + '/public'));
@@ -62,15 +62,14 @@ function startServer(init){
     ws.send(JSON.stringify(dataBuffer));
   });
 
-  client.subscribe('nocd5@github/#');
-  client.on('message', function(topic, message){
+  mqtt_client.subscribe('nocd5@github/#');
+  mqtt_client.on('message', function(topic, message){
     data = JSON.parse(message);
     t = topic.split("/");
     if (t[1] == 'Koshian'){
       console.log(topic + ": " + message);
 
-      pg.connect(process.env.DATABASE_URL, function(err, client){
-        if (err) response.send("Could not connect to DB: " + err);
+      if (client != null){
         client.query(
           "INSERT INTO temprh (date, temp, rh) values($1, $2, $3) RETURNING id;",
           [ data["date"], data["temp"], data["rh"] ],
@@ -83,7 +82,7 @@ function startServer(init){
             client.end();
           }
         );
-      });
+      }
 
       dataBuffer.push(data);
       dataBuffer = dataBuffer.slice(dataBuffer.length - bufferSize);
