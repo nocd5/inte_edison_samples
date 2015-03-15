@@ -28,7 +28,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client){
     row["rh"] = Number(row["rh"]);
     rows.push(row);
   });
-  query.on('end', function(row,err){
+  query.on('end', function(row, err){
     var date = new Date();
     date.setDate(date.getDate() - 1);
     client.query("DELETE FROM temprh WHERE date < $1;", [ date ]);
@@ -40,8 +40,8 @@ pg.connect(process.env.DATABASE_URL, function(err, client){
     client.end.bind(client);
     startServer(rows);
   });
-  query.on('error', function(error){
-    console.log("ERROR!!" + error);
+  query.on('error', function(err){
+    console.log("ERROR!!" + err);
   });
 });
 
@@ -70,19 +70,24 @@ function startServer(init){
       console.log(topic + ": " + message);
 
       pg.connect(process.env.DATABASE_URL, function(err, client){
-        if (err) response.send("Could not connect to DB: " + err);
-        client.query(
-          "INSERT INTO temprh (date, temp, rh) values($1, $2, $3) RETURNING id;",
-          [ data["date"], data["temp"], data["rh"] ],
-          function (err, result){
-            if (err) {
-              console.log("INSERT QUERY ERROR : " + err);
-            } else {
-              console.log('row inserted with id: ' + result.rows[0].id);
+        if (err){
+          console.log("Could not connect to DB: " + err);
+        }
+        else {
+          client.query(
+            "INSERT INTO temprh (date, temp, rh) values($1, $2, $3) RETURNING id;",
+            [ data["date"], data["temp"], data["rh"] ],
+            function (err, result){
+              if (err){
+                console.log("INSERT QUERY ERROR : " + err);
+              }
+              else {
+                console.log('row inserted with id: ' + result.rows[0].id);
+              }
+              client.end();
             }
-            client.end();
-          }
-        );
+          );
+        }
       });
 
       dataBuffer.push(data);
