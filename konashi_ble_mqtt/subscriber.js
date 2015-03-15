@@ -20,29 +20,34 @@ var mqtt_client = mqtt.connect({
   password:process.env.MQTT_PASSWORD
 });
 
-pg.connect(process.env.DATABASE_URL, function(err, client){
-  var rows = [];
-  var query = client.query('SELECT date, temp, rh FROM temprh;');
-  query.on('row', function(row){
-    row["temp"] = Number(row["temp"]);
-    row["rh"] = Number(row["rh"]);
-    rows.push(row);
-  });
-  query.on('end', function(row, err){
-    var date = new Date();
-    date.setDate(date.getDate() - 1);
-    client.query("DELETE FROM temprh WHERE date < $1;", [ date ]);
-    rows = rows.sort(function(a, b){
-      if (a["date"] < b["date"]) return -1;
-      if (a["date"] > b["date"]) return 1;
-      return 0;
+pg.connect(process.env.DATABASE_URL, function(error, client){
+  if (error){
+    console.log("Could not connect to DB: " + error);
+  }
+  else {
+    var rows = [];
+    var query = client.query('SELECT date, temp, rh FROM temprh;');
+    query.on('row', function(row){
+      row["temp"] = Number(row["temp"]);
+      row["rh"] = Number(row["rh"]);
+      rows.push(row);
     });
-    client.end.bind(client);
-    startServer(rows);
-  });
-  query.on('error', function(err){
-    console.log("ERROR!!" + err);
-  });
+    query.on('end', function(row, err){
+      var date = new Date();
+      date.setDate(date.getDate() - 1);
+      client.query("DELETE FROM temprh WHERE date < $1;", [ date ]);
+      rows = rows.sort(function(a, b){
+        if (a["date"] < b["date"]) return -1;
+        if (a["date"] > b["date"]) return 1;
+        return 0;
+      });
+      client.end.bind(client);
+      startServer(rows);
+    });
+    query.on('error', function(err){
+      console.log("ERROR!!" + err);
+    });
+  }
 });
 
 function startServer(init){
@@ -69,9 +74,9 @@ function startServer(init){
     if (t[1] == 'Koshian'){
       console.log(topic + ": " + message);
 
-      pg.connect(process.env.DATABASE_URL, function(err, client){
-        if (err){
-          console.log("Could not connect to DB: " + err);
+      pg.connect(process.env.DATABASE_URL, function(error, client){
+        if (error){
+          console.log("Could not connect to DB: " + error);
         }
         else {
           client.query(
