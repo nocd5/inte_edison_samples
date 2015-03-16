@@ -23,6 +23,7 @@ var mqtt_client = mqtt.connect({
 pg.connect(process.env.DATABASE_URL, function(error, client){
   if (error){
     console.log("Could not connect to DB: " + error);
+    startServer([]);
   }
   else {
     var rows = [];

@@ -1,120 +1,20 @@
 <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-<script type="text/javascript" src="//www.google.com/jsapi"></script>
 
-<input type="button" value="connect" onClick="connect()" />
-<input type="button" value="disconnect" onClick="disconnect()" />
-<div id="chart1">Now Loading ...</div>
+<link rel="stylesheet" href="//bootswatch.com/paper/bootstrap.min.css">
+<link rel="stylesheet" href="css/layout.css">
+<script src="//code.jquery.com/jquery.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="//www.google.com/jsapi"></script>
 
-<script type="text/javascript">
+<script src="//fb.me/react-0.13.0.js"></script>
+<script src="//fb.me/JSXTransformer-0.13.0.js"></script>
+<script src="//rawgit.com/react-bootstrap/react-bootstrap-bower/master/react-bootstrap.min.js"></script>
 
-var host = location.origin.replace(/^http/, 'ws');
-var ws = null;
-var chart = null;
-var autoReconnect = true;
-const maxRetry = 10;
-var retryCount = 0;
-var currentData = null
-var chart1Options = {
-  title: 'Koshian/Uzuki',
-  width: window.innerWidth - 10,
-  height: window.innerHeight - 60,
-  pointSize: 2,
-  chartArea: {'width':'80%', 'height':'65%', 'left':60 },
-  hAxis: {
-      title:'Time',
-      titleTextStyle:{italic:false},
-      slantedText:true,
-      gridlines: {
-        units: {
-          years: {format: ["yyyy"]},
-          months: {format: ["yyyy/MM"]},
-          days: {format: ["yyyy/MM/dd"]},
-          hours: {format: ["yyyy/MM/dd HH"]},
-          minutes: {format: ["HH:mm"]},
-          seconds: {format: ["HH:mm:ss"]},
-          milliseconds: {format: ['HH:mm:ss.SSS']},
-        }
-      },
-  },
-  vAxis: {
-    title:'Values',
-    titleTextStyle:{italic:false},
-    slantedText:true,
-    maxValue: 100,
-    minValue: 0,
-  },
-  explorer: { actions: ['dragToZoom', 'rightClickToReset'], maxZoomIn:0.01 },
-};
+<script type="text/javascript" src="script/index.js"></script>
+<script type="text/jsx" src="script/index.jsx"></script>
+<script type="text/javascript" src="script/chart_wrapper.js"></script>
 
-window.addEventListener('resize', function(){
-  chart1Options["width"] = window.innerWidth - 10;
-  chart1Options["height"] = window.innerHeight - 60;
-  drawChart();
-});
-
-google.load('visualization', '1.0', {'packages':['corechart'], 'language': 'en'});
-google.setOnLoadCallback(function(){
-  connect();
-});
-
-function initialize(){
-  this.ws = new(window.WebSocket || window.MozWebSocket)(this.host, "websocket");
-  this.ws.addEventListener('open', function(event){
-    console.log("connected");
-    retryCount = 0;
-  });
-  this.ws.addEventListener('close', function(event){
-    console.log("disconnected");
-    if ((autoReconnect === true) && (maxRetry > retryCount++)){
-      console.log("retry count : " + retryCount);
-      top.initialize();
-    }
-  });
-  this.chart = new google.visualization.LineChart(document.getElementById('chart1'));
-  this.ws.addEventListener('message', function(message){
-    drawChart(JSON.parse(message.data).map( function(e){
-      var d = [];
-      if (e["date"] == 0){
-        d = [ null, 0, 0 ];
-      }
-      else {
-        d = [ new Date(e["date"]), e["temp"], e["rh"] ];
-      }
-      return d;
-    }));
-  });
-}
-
-function drawChart(values){
-  if (values == null){
-    if (this.currentData != null){
-      this.chart.draw(this.currentData, this.chart1Options);
-    }
-    return;
-  }
-
-  var dataTable = new google.visualization.DataTable();
-  dataTable.addColumn('datetime', 'Time');
-  dataTable.addColumn('number', 'Temperature[degC]');
-  dataTable.addColumn('number', 'Humidity[%RH]');
-  dataTable.addRows(values);
-  var formatter = new google.visualization.DateFormat({pattern: 'yyyy/MM/dd HH:mm:ss'});
-  formatter.format(dataTable, 0);
-  this.chart.draw(dataTable, this.chart1Options);
-
-  this.currentData = dataTable;
-}
-
-function disconnect(){
-  this.autoReconnect = false;
-  this.ws.close();
-  this.ws = null;
-}
-
-function connect(){
-  this.initialize();
-  var autoReconnect = true;
-}
-
-</script>
+<div id="header"></div>
+<center><div id="chart" class="chart">Now Loading ...</div></center>
+<div id="button" class="button"></div>
 
