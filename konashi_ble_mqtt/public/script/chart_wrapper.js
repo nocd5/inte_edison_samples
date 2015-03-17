@@ -33,8 +33,8 @@ var chart1Options = {
 };
 
 window.addEventListener('resize', function(){
-  chart1Options["width"] = window.innerWidth - 10;
-  chart1Options["height"] = window.innerHeight - 60;
+  chart1Options["width"] = window.innerWidth * 0.95;
+  chart1Options["height"] = window.innerHeight * 0.6;
   drawChart();
 });
 
