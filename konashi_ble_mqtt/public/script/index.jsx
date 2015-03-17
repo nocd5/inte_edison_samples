@@ -33,6 +33,35 @@ var MyButton = React.createClass({
   }
 });
 
+var BSSwitch = React.createClass({
+  getInitialState: function() {
+    return { checked: true };
+  },
+  render: function(){
+    return (
+      <ReactCheckbox name={this.props.name} />
+    );
+  },
+  componentDidMount: function() {
+    $("[name='"+this.props.name+"']").bootstrapSwitch({
+        state: this.state.checked,
+        onColor: this.props.onColor,
+        offColor: this.props.offColor,
+        handleWidth: this.props.handleWidth,
+        onSwitchChange: this.handleChange
+    });
+  },
+  handleChange: function(_event, _state) {
+    if (_state){
+      connect();
+    }
+    else {
+      disconnect();
+    }
+  }
+});
+
 React.render(<JumbotronBox text="Intel Edison" />, document.getElementById("header"));
-React.render(<MyButton/>, document.getElementById("button"));
+// React.render(<MyButton/>, document.getElementById("button"));
+React.render(<BSSwitch name="switch" onColor="primary" handleWidth="50" />, document.getElementById("switch"));
 
