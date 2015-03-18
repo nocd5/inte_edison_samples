@@ -2,10 +2,12 @@ var chart = null;
 var currentData = null
 var chart1Options = {
   title: 'Koshian/Uzuki',
+  colors: [ '#D9534F', '#428BCA' ],
   width: window.innerWidth * 0.95,
   height: window.innerHeight * 0.6,
+  chartArea: {width:'80%', height:'50%', left:60 },
   pointSize: 2,
-  chartArea: {'width':'80%', 'height':'50%', 'left':60 },
+  legend: { position:'top', alignment:'end' },
   hAxis: {
       title:'Time',
       titleTextStyle:{italic:false},
@@ -23,8 +25,6 @@ var chart1Options = {
       },
   },
   vAxis: {
-    title:'Values',
-    titleTextStyle:{italic:false},
     slantedText:true,
     maxValue: 100,
     minValue: 0,
@@ -40,6 +40,7 @@ window.addEventListener('resize', function(){
 
 google.load('visualization', '1.0', {'packages':['corechart'], 'language': 'en'});
 google.setOnLoadCallback(function(){
+  this.chart = new google.visualization.LineChart(document.getElementById('chart'));
   connect();
 });
 
@@ -53,8 +54,8 @@ function drawChart(values){
 
   var dataTable = new google.visualization.DataTable();
   dataTable.addColumn('datetime', 'Time');
-  dataTable.addColumn('number', 'Temperature[degC]');
-  dataTable.addColumn('number', 'Humidity[%RH]');
+  dataTable.addColumn('number', 'Temperature [degC]');
+  dataTable.addColumn('number', 'Humidity [%RH]');
   dataTable.addRows(values);
   var formatter = new google.visualization.DateFormat({pattern: 'yyyy/MM/dd HH:mm:ss'});
   formatter.format(dataTable, 0);

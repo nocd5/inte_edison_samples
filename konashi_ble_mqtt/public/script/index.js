@@ -17,7 +17,6 @@ function initialize(){
       top.initialize();
     }
   });
-  this.chart = new google.visualization.LineChart(document.getElementById('chart'));
   this.ws.addEventListener('message', function(message){
     drawChart(JSON.parse(message.data).map( function(e){
       var d = [];
