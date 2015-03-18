@@ -39,6 +39,6 @@ function disconnect(){
 
 function connect(){
   this.initialize();
-  var autoReconnect = true;
+  this.autoReconnect = true;
 }
 
