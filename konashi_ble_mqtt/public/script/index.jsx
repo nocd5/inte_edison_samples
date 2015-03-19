@@ -1,4 +1,5 @@
 var Button = ReactBootstrap.Button;
+var Panel = ReactBootstrap.Panel;
 var Jumbotron = ReactBootstrap.Jumbotron;
 
 var JumbotronBox = React.createClass({
@@ -63,5 +64,17 @@ var BSSwitch = React.createClass({
 
 React.render(<JumbotronBox text="Intel Edison" />, document.getElementById("header"));
 // React.render(<MyButton/>, document.getElementById("button"));
-React.render(<BSSwitch name="switch" onColor="primary" handleWidth="50" />, document.getElementById("switch"));
+var BSPanel = React.createClass({
+  render: function() {
+    return(
+      <Panel header={this.props.title} bsStyle="primary">
+        <div id="chart" class="chart">Now Loading ...</div>
+        <center><div id="switch" class="switch"></div></center>
+      </Panel>
+    );
+  }
+});
 
+React.render(<BSPanel title="Koshian/Uzuki" />, document.getElementById("panel"));
+this.chart = new google.visualization.LineChart(document.getElementById('chart'));
+React.render(<BSSwitch name="switch" onColor="primary" handleWidth="50" />, document.getElementById("switch"));

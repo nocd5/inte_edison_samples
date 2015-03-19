@@ -1,11 +1,10 @@
 var chart = null;
 var currentData = null
 var chart1Options = {
-  title: 'Koshian/Uzuki',
   colors: [ '#D9534F', '#428BCA' ],
-  width: window.innerWidth * 0.95,
-  height: window.innerHeight * 0.6,
-  chartArea: {width:'80%', height:'60%' },
+  width: window.innerWidth * 0.9,
+  height: (window.innerHeight - 250) * 0.8,
+  chartArea: { width:'95%', height:'70%' },
   pointSize: 2,
   legend: { position:'top', alignment:'end' },
   hAxis: {
@@ -33,14 +32,13 @@ var chart1Options = {
 };
 
 window.addEventListener('resize', function(){
-  chart1Options["width"] = window.innerWidth * 0.95;
-  chart1Options["height"] = window.innerHeight * 0.6;
+  chart1Options["width"] = window.innerWidth * 0.9;
+  chart1Options["height"] = (window.innerHeight - 250) * 0.8;
   drawChart();
 });
 
 google.load('visualization', '1.0', {'packages':['corechart'], 'language': 'en'});
 google.setOnLoadCallback(function(){
-  this.chart = new google.visualization.LineChart(document.getElementById('chart'));
   connect();
 });
 
