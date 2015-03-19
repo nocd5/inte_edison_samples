@@ -3,7 +3,7 @@ var currentData = null
 var chart1Options = {
   colors: [ '#D9534F', '#428BCA' ],
   width: window.innerWidth * 0.9,
-  height: (window.innerHeight - 250) * 0.8,
+  height: (window.innerHeight - 400) * 1.0,
   chartArea: { width:'95%', height:'70%' },
   pointSize: 2,
   legend: { position:'top', alignment:'end' },
@@ -33,7 +33,7 @@ var chart1Options = {
 
 window.addEventListener('resize', function(){
   chart1Options["width"] = window.innerWidth * 0.9;
-  chart1Options["height"] = (window.innerHeight - 250) * 0.8;
+  chart1Options["height"] = (window.innerHeight - 400) * 1.0;
   drawChart();
 });
 

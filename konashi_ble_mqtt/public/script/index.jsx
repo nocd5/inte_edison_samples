@@ -63,13 +63,13 @@ var BSSwitch = React.createClass({
 });
 
 React.render(<JumbotronBox text="Intel Edison" />, document.getElementById("header"));
-// React.render(<MyButton/>, document.getElementById("button"));
 var BSPanel = React.createClass({
   render: function() {
     return(
       <Panel header={this.props.title} bsStyle="primary">
         <div id="chart" class="chart">Now Loading ...</div>
         <center><div id="switch" class="switch"></div></center>
+        <div id="button" class="button"></div>
       </Panel>
     );
   }
@@ -77,4 +77,5 @@ var BSPanel = React.createClass({
 
 React.render(<BSPanel title="Koshian/Uzuki" />, document.getElementById("panel"));
 this.chart = new google.visualization.LineChart(document.getElementById('chart'));
-React.render(<BSSwitch name="switch" onColor="primary" handleWidth="50" />, document.getElementById("switch"));
+// React.render(<BSSwitch name="switch" onColor="primary" handleWidth="50" />, document.getElementById("switch"));
+React.render(<MyButton/>, document.getElementById("button"));
