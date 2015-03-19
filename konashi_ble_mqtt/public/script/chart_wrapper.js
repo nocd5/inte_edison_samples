@@ -5,7 +5,7 @@ var chart1Options = {
   colors: [ '#D9534F', '#428BCA' ],
   width: window.innerWidth * 0.95,
   height: window.innerHeight * 0.6,
-  chartArea: {width:'80%', height:'50%', left:60 },
+  chartArea: {width:'80%', height:'60%' },
   pointSize: 2,
   legend: { position:'top', alignment:'end' },
   hAxis: {
