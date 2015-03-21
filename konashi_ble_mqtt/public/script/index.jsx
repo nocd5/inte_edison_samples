@@ -40,7 +40,7 @@ var BSSwitch = React.createClass({
   },
   render: function(){
     return (
-      <ReactCheckbox name={this.props.name} />
+      <input type="checkbox" name={this.props.name} />
     );
   },
   componentDidMount: function() {
@@ -62,20 +62,22 @@ var BSSwitch = React.createClass({
   }
 });
 
-React.render(<JumbotronBox text="Intel Edison" />, document.getElementById("header"));
 var BSPanel = React.createClass({
   render: function() {
     return(
       <Panel header={this.props.title} bsStyle="primary">
-        <div id="chart" class="chart">Now Loading ...</div>
-        <center><div id="switch" class="switch"></div></center>
-        <div id="button" class="button"></div>
+        <center>
+          <div id="chart" class="chart">Now Loading ...</div>
+          <div id="switch" class="switch"></div>
+          <div id="button" class="button"></div>
+        </center>
       </Panel>
     );
   }
 });
 
+React.render(<JumbotronBox text="Intel Edison" />, document.getElementById("header"));
 React.render(<BSPanel title="Koshian/Uzuki" />, document.getElementById("panel"));
 this.chart = new google.visualization.LineChart(document.getElementById('chart'));
-// React.render(<BSSwitch name="switch" onColor="primary" handleWidth="50" />, document.getElementById("switch"));
-React.render(<MyButton/>, document.getElementById("button"));
+React.render(<BSSwitch name="switch" onColor="primary" handleWidth="50" />, document.getElementById("switch"));
+// React.render(<MyButton/>, document.getElementById("button"));

@@ -1,10 +1,13 @@
 var chart = null;
 var currentData = null
+var chartWidth = function(){ return $("panel").width; };
+var chartHeight = function(){ return (window.innerHeight - 400) };
+
 var chart1Options = {
   colors: [ '#D9534F', '#428BCA' ],
-  width: window.innerWidth * 0.9,
-  height: (window.innerHeight - 400) * 1.0,
-  chartArea: { width:'95%', height:'70%' },
+  width: chartWidth(),
+  height: chartHeight(),
+  chartArea: { width:'90%', height:'70%' },
   pointSize: 2,
   legend: { position:'top', alignment:'end' },
   hAxis: {
@@ -31,10 +34,15 @@ var chart1Options = {
   explorer: { actions: ['dragToZoom', 'rightClickToReset'], maxZoomIn:0.01 },
 };
 
+var queue = null;
+var wait = 300;
 window.addEventListener('resize', function(){
-  chart1Options["width"] = window.innerWidth * 0.9;
-  chart1Options["height"] = (window.innerHeight - 400) * 1.0;
-  drawChart();
+  clearTimeout(queue);
+  queue = setTimeout(function(){
+    chart1Options["width"] = chartWidth();
+    chart1Options["height"] = chartHeight();
+    drawChart();
+  }, wait);
 });
 
 google.load('visualization', '1.0', {'packages':['corechart'], 'language': 'en'});
