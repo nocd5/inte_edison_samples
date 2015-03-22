@@ -62,14 +62,39 @@ var BSSwitch = React.createClass({
   }
 });
 
+var GoogleLineChart = React.createClass({
+  render: function(){
+    return(
+      <div id={this.props.graphName}>{this.props.text}</div>
+    );
+  },
+  componentDidMount: function(){
+    this.drawCharts();
+  },
+  componentDidUpdate: function(){
+    this.drawCharts();
+  },
+  drawCharts: function(){
+    var data = this.props.data;
+    var options = this.props.options;
+
+    var chart = new google.visualization.LineChart(
+      document.getElementById(this.props.graphName)
+    );
+    if (data != null){
+      chart.draw(data, options);
+    }
+  }
+});
+
 var BSPanel = React.createClass({
   render: function() {
     return(
       <Panel header={this.props.title} bsStyle="primary">
         <center>
-          <div id="chart" class="chart">Now Loading ...</div>
-          <div id="switch" class="switch"></div>
-          <div id="button" class="button"></div>
+          <GoogleLineChart graphName="chart" text="Now Loading ..." />
+          <div id="switch" className="switch"></div>
+          <div id="button" className="button"></div>
         </center>
       </Panel>
     );
@@ -78,6 +103,5 @@ var BSPanel = React.createClass({
 
 React.render(<JumbotronBox text="Intel Edison" />, document.getElementById("header"));
 React.render(<BSPanel title="Koshian/Uzuki" />, document.getElementById("panel"));
-this.chart = new google.visualization.LineChart(document.getElementById('chart'));
 React.render(<BSSwitch name="switch" onColor="primary" handleWidth="50" />, document.getElementById("switch"));
 // React.render(<MyButton/>, document.getElementById("button"));

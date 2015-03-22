@@ -34,15 +34,10 @@ var chart1Options = {
   explorer: { actions: ['dragToZoom', 'rightClickToReset'], maxZoomIn:0.01 },
 };
 
-var queue = null;
-var wait = 300;
 window.addEventListener('resize', function(){
-  clearTimeout(queue);
-  queue = setTimeout(function(){
-    chart1Options["width"] = chartWidth();
-    chart1Options["height"] = chartHeight();
-    drawChart();
-  }, wait);
+  chart1Options["width"] = chartWidth();
+  chart1Options["height"] = chartHeight();
+  drawChart();
 });
 
 google.load('visualization', '1.0', {'packages':['corechart'], 'language': 'en'});
@@ -53,7 +48,13 @@ google.setOnLoadCallback(function(){
 function drawChart(values){
   if (values == null){
     if (this.currentData != null){
-      this.chart.draw(this.currentData, this.chart1Options);
+      React.render(
+        React.createElement(
+          GoogleLineChart,
+          { data:this.currentData, graphName:"chart", options:this.chart1Options }
+        ),
+        document.getElementById("chart")
+      );
     }
     return;
   }
@@ -65,7 +66,13 @@ function drawChart(values){
   dataTable.addRows(values);
   var formatter = new google.visualization.DateFormat({pattern: 'yyyy/MM/dd HH:mm:ss'});
   formatter.format(dataTable, 0);
-  this.chart.draw(dataTable, this.chart1Options);
+  React.render(
+    React.createElement(
+      GoogleLineChart,
+      { data:dataTable, graphName:"chart", options:this.chart1Options }
+    ),
+    document.getElementById("chart")
+  );
 
   this.currentData = dataTable;
 }
