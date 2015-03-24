@@ -9,7 +9,7 @@ var chart1Options = {
   colors: [ '#D9534F', '#428BCA' ],
   height: chartHeight(),
   chartArea: { width:'90%', height:'70%' },
-  // pointSize: 2,
+  pointSize: 2,
   legend: { position:'top', alignment:'end' },
   hAxis: {
       title:'Time',
