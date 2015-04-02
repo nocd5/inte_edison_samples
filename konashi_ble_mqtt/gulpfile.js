@@ -9,7 +9,7 @@ var buffer = require('gulp-buffer');
 gulp.task('default', function(){
   // if relative-path is given to `entries`,
   // fail gulp command on Heroku.
-  return browserify({ entries: [ './src/main.js' ] })
+  return browserify({ entries: [ __dirname + '/src/main.js' ] })
     .transform(reactify)
     .bundle()
     .pipe(source('content.js'))
