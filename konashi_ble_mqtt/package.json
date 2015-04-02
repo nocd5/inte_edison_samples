@@ -16,11 +16,9 @@
     "mqtt": "*",
     "ws": "*",
     "pg": "*",
-    "date-utils": "*"
-  },
-  "devDependencies": {
-    "browserify": "*",
+    "date-utils": "*",
     "gulp": "*",
+    "browserify": "*",
     "gulp-uglify": "*",
     "gulp-rename": "*",
     "gulp-buffer": "*",
@@ -29,5 +27,6 @@
     "bootstrap-switch": "*",
     "reactify": "*",
     "vinyl-source-stream": "*"
-  }
+  },
+  "devDependencies": { }
 }
