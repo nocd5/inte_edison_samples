@@ -7,8 +7,6 @@ var rename = require('gulp-rename');
 var buffer = require('gulp-buffer');
 
 gulp.task('default', function(){
-  // if relative-path is given to `entries`,
-  // fail gulp command on Heroku.
   return browserify({ entries: [ './src/main.js' ] })
     .transform(reactify)
     .bundle()
