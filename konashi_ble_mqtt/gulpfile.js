@@ -6,15 +6,17 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var buffer = require('gulp-buffer');
 
-gulp.task('browserify', function(){
-  var b = browserify({
-    entries: ['./src/main.js'],
-    transform: [reactify]
-  });
-  return b.bundle()
+gulp.task('default', function(){
+  // if relative-path is given to `entries`,
+  // fail gulp command on Heroku.
+  return browserify({ entries: [ __dirname + '/src/main.js' ] })
+    .transform(reactify)
+    .bundle()
     .pipe(source('content.js'))
-    .pipe(rename({extname: ".min.js"}))
     .pipe(buffer())
+    .pipe(gulp.dest('./public'))
     .pipe(uglify())
+    .pipe(rename({ extname: ".min.js" }))
     .pipe(gulp.dest('./public'));
 });
+
