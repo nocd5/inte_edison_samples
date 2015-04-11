@@ -6,7 +6,6 @@
     "start": "node server.js",
     "postinstall": "gulp"
   },
-
   "engine": {
     "node": "*",
     "npm": "*"
@@ -16,17 +15,20 @@
     "mqtt": "*",
     "ws": "*",
     "pg": "*",
-    "date-utils": "*",
-    "gulp": "*",
+    "date-utils": "*"
+  },
+  "devDependencies": {
+    "bootstrap-switch": "*",
     "browserify": "*",
-    "gulp-uglify": "*",
-    "gulp-rename": "*",
+    "gulp": "*",
     "gulp-buffer": "*",
+    "gulp-minify-css": "*",
+    "gulp-rename": "*",
+    "gulp-sass": "*",
+    "gulp-uglify": "*",
     "react": "*",
     "react-bootstrap": "*",
-    "bootstrap-switch": "*",
     "reactify": "*",
     "vinyl-source-stream": "*"
-  },
-  "devDependencies": { }
+  }
 }

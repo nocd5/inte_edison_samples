@@ -5,9 +5,17 @@ var reactify = require('reactify');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var buffer = require('gulp-buffer');
+var sass = require('gulp-sass');
+var minifyCSS = require('gulp-minify-css');
 
 gulp.task('default', function(){
-  return browserify({ entries: [ './src/main.js' ] })
+  gulp.src('./src/layout/*.scss')
+    .pipe(sass())
+    .pipe(gulp.dest('./public/css'))
+    .pipe(minifyCSS())
+    .pipe(rename({ extname: ".min.css" }))
+    .pipe(gulp.dest('./public/css'));
+  browserify({ entries: [ './src/main.js' ] })
     .transform(reactify)
     .bundle()
     .pipe(source('content.js'))
