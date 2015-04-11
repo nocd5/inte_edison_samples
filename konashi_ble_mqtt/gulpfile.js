@@ -15,7 +15,7 @@ gulp.task('default', function(){
     .pipe(minifyCSS())
     .pipe(rename({ extname: ".min.css" }))
     .pipe(gulp.dest('./public/css'));
-  browserify({ entries: [ './src/main.js' ] })
+  browserify({ entries: [ './src/script/main.js' ] })
     .transform(reactify)
     .bundle()
     .pipe(source('content.js'))
