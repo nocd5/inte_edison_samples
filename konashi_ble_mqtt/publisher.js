@@ -41,10 +41,10 @@ var characteristicUUIDs = [KONASHI_I2C_CONFIG_UUID,
                            KONASHI_I2C_READ_UUID];
 
 function readReg(characteristics, addr, reg, len, func) {
-  var charaStartStop = characteristics[1]
-  var charaWrite     = characteristics[2]
-  var charaReadParam = characteristics[3]
-  var charaRead      = characteristics[4]
+  var charaStartStop = characteristics[1];
+  var charaWrite     = characteristics[2];
+  var charaReadParam = characteristics[3];
+  var charaRead      = characteristics[4];
   // send StartCondition
   charaStartStop.write(new Buffer([KOSHIAN_I2C_CONDITION_START]), false, function (error) {
     // send register-address/command
@@ -57,7 +57,7 @@ function readReg(characteristics, addr, reg, len, func) {
           charaStartStop.write(new Buffer([KOSHIAN_I2C_CONDITION_STOP]), false)
           // read received data
           charaRead.read(function (error, data) {
-            func(data)
+            func(data);
           });
         });
       });
