@@ -6,6 +6,7 @@ var _WebSocket = {
   maxRetry: 10,
   eventListener: function(message){ },
   initialize : function(){
+    that = this;
     this.ws = new(window.WebSocket || window.MozWebSocket)(this.host, "websocket");
     this.ws.addEventListener('open', function(event){
       console.log("connected");
@@ -13,9 +14,10 @@ var _WebSocket = {
     });
     this.ws.addEventListener('close', function(event){
       console.log("disconnected");
-      if ((this.autoReconnect === true) && (this.maxRetry > this.retryCount++)){
-        console.log("retry count : " + this.retryCount);
-        top.initialize();
+      that.retryCount = 0;
+      if ((this.autoReconnect === true) && (that.maxRetry > that.retryCount++)){
+        console.log("retry count : " + that.retryCount);
+        that.initialize();
       }
     });
     this.ws.addEventListener('message', this.eventListener);
