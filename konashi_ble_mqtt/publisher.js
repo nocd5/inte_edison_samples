@@ -85,7 +85,9 @@ noble.on('stateChange', function (state) {
 function publishData(temp, rh) {
   var date = new Date();
   var data = {"temp":temp, "rh":rh};
-  data["date"] = date.toString();
+  // "Sun May 31 2015 23:25:43 GMT+0900" format is not accepted to PostgerSQL.
+  // convert to "Sun May 31 2015 23:25:43+0900"
+  data["date"] = date.toString().replace(/ GMT\+(\d{4}).*/, "+$1");
   client.publish('nocd5@github/Koshian', JSON.stringify(data));
 }
 

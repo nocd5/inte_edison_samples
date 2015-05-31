@@ -76,6 +76,10 @@ function startServer(init){
       }
     });
 
+    // "Sun May 31 2015 23:25:43+0900" format is not accepted.
+    // convert to "Sun May 31 2015 23:25:43 GMT+0900"
+    data["date"] = data["date"].replace(/\+(\d{4})/, " GMT+$1");
+
     dataBuffer.push(data);
     dataBuffer = dataBuffer.slice(dataBuffer.length - bufferSize);
     wss.clients.forEach(function(c){
