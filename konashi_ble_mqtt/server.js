@@ -60,9 +60,11 @@ function startServer(init){
         console.log("Could not connect to DB: " + error);
       }
       else {
+        // "Sun May 31 2015 23:25:43 GMT+0900" format is not accepted to PostgerSQL.
+        // convert to "Sun May 31 2015 23:25:43+0900"
         client.query(
           "INSERT INTO temprh (date, temp, rh) values($1, $2, $3) RETURNING id;",
-          [ data["date"], data["temp"], data["rh"] ],
+          [ data["date"].replace(/ GMT\+(\d{4}).*/, "+$1"), data["temp"], data["rh"] ],
           function (err, result){
             if (err){
               console.log("INSERT QUERY ERROR : " + err);
@@ -75,10 +77,6 @@ function startServer(init){
         );
       }
     });
-
-    // "Sun May 31 2015 23:25:43+0900" format is not accepted.
-    // convert to "Sun May 31 2015 23:25:43 GMT+0900"
-    data["date"] = data["date"].replace(/\+(\d{4})/, " GMT+$1");
 
     dataBuffer.push(data);
     dataBuffer = dataBuffer.slice(dataBuffer.length - bufferSize);
